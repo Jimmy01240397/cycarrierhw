@@ -10,6 +10,7 @@ import (
     "cycarrierhw/models/network"
     "cycarrierhw/models/domain"
     "cycarrierhw/models/crt"
+    "cycarrierhw/models/scan"
 )
 
 var f *flag.FlagSet
@@ -69,6 +70,18 @@ RPKI Status: %s
     for _, report := range ipinfo.Reports {
         output += fmt.Sprintf("Abuse Report: %s %s\n", report.ReportedAt.Format("2006-01-02T15:04:05-07:00"), report.Comment)
     }
+
+    output += "\n"
+    output += "Port Scan:\n"
+    ports := scan.Scan(ipinfo.IP.String())
+    for key, value := range ports {
+        output += fmt.Sprintf("%s:\n", key)
+        for _, port := range value {
+            output += fmt.Sprintf("%d\n", port)
+        }
+    }
+    output += "\n"
+
     for _, dns := range ipinfo.PassiveDNS {
         output += fmt.Sprintf("PassiveDNS: %s\n", dns)
     }
@@ -116,6 +129,18 @@ RPKI Status: %s
     output += fmt.Sprintf(`Abuse Contact: %s
 Registrar: %s
 `, dninfo.Whois.Registrant.Email, dninfo.Whois.Registrar.Name)
+    
+    output += "\n"
+    output += "Port Scan:\n"
+    ports := scan.Scan(dninfo.DN)
+    for key, value := range ports {
+        output += fmt.Sprintf("%s:\n", key)
+        for _, port := range value {
+            output += fmt.Sprintf("%d\n", port)
+        }
+    }
+    output += "\n"
+    
     output += fmt.Sprintf("DNSSEC trace:\n%s\n", dninfo.DNSSEC)
     sort.Slice(dninfo.Status, func(i, j int) bool {
         if dninfo.Status[i].Type != dninfo.Status[j].Type {
