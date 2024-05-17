@@ -16,9 +16,13 @@ drwxr-xr-x 2 root root       0 May 17 08:54 ..
 
 ## Run
 1. Goto [https://www.virustotal.com/gui/user/<username\>/apikey](https://www.virustotal.com/gui/sign-in) and copy your API key to `.env` `VIRUSTOTALAPIKEY`
+
 ![image](https://github.com/Jimmy01240397/cycarrierhw/assets/57281249/4e88ab83-81d0-433d-ae52-8ac80878ea3b)
 
 2. Goto https://www.abuseipdb.com/account/api and copy your API key to `.env` `ABUSEIPDB`
+
+![image](https://github.com/Jimmy01240397/cycarrierhw/assets/57281249/e58be360-0c5e-4524-9250-30c4d277fafc)
+
 
 ```
 VIRUSTOTALAPIKEY=
