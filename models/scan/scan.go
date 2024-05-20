@@ -11,6 +11,21 @@ func scanPort(protocol, hostname string, port uint16) bool {
 	if err != nil {
 		return false
 	}
+    if protocol == "udp" {
+        _, err = conn.Write([]byte("scan"))
+        if err != nil {
+            return false
+        }
+        err = conn.SetReadDeadline(time.Now().Add(1 * time.Second))
+        if err != nil {
+            return false
+        }
+        buffer := make([]byte, 1024)
+        _, err := conn.Read(buffer)
+        if err != nil {
+            return false
+        }
+    }
 	defer conn.Close()
 	return true
 }
@@ -33,7 +48,7 @@ func Scan(host string) map[string][]uint16 {
             result["tcp"] = append(result["tcp"], uint16(nowport))
         }
     }
-    /*for i := 0; i <= 1024; i++ {
+    for i := 0; i <= 1024; i++ {
         go func(port uint16) {
             if scanPort("udp", host, port) {
                 ports <- int(port)
@@ -47,6 +62,6 @@ func Scan(host string) map[string][]uint16 {
         if nowport > 0 {
             result["udp"] = append(result["udp"], uint16(nowport))
         }
-    }*/
+    }
     return result
 }

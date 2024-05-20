@@ -42,7 +42,11 @@ func GetInfo(ip string, fulldata bool) (ipinfo IPInfo, err error) {
     }
     ipinfo.Prefix, err = netaddr.ParseIPNet(gjson.Get(data, "data.prefix").String())
     if err != nil {
-        return
+        if ipinfo.IP.Version() == 4 {
+            ipinfo.Prefix = ipinfo.IP.(*netaddr.IPv4).ToNet()
+        } else if ipinfo.IP.Version() == 6 {
+            ipinfo.Prefix = ipinfo.IP.(*netaddr.IPv6).ToNet()
+        }
     }
     asns := gjson.Get(data, "data.asns").Array()
     ipinfo.ASN = make([]ASNdata, len(asns))

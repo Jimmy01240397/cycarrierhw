@@ -91,6 +91,30 @@ RPKI Status: %s
             output += fmt.Sprintf("This IP prifix RPKI Status is not 'valid' at AS%d. It means that the prefix does not have a valid cryptographic signature attesting to its authenticity and proper authorization. Without an RPKI certificate, there is no cryptographic proof of authorization, leaving the prefix vulnerable to hijacking.\n", asn.ASN)
         }
     }
+    
+    badports := make(map[string][]uint16)
+    badportspool := map[string][]uint16{
+        "tcp": []uint16{20,21,22,23,69,88,111,135,139,161,162,389,445,636,2049,3306,3389,5432,5900,5902,6379},
+    }
+    for key, value := range ports {
+        for _, port := range value {
+            if slices.Contains(badportspool[key], port) {
+                badports[key] = append(badports[key], port)
+            }
+        }
+    }
+    if len(badports) > 0 {
+        output += "There some weaknesses port is open:\n"
+        for key, value := range badports {
+            output += fmt.Sprintf("%s:\n", key)
+            for _, port := range value {
+                output += fmt.Sprintf("%d\n", port)
+            }
+        }
+        output += "We recommended not to open these port. Please check.\n"
+        output += "\n"
+    }
+
     fmt.Println(output)
 }
 
@@ -250,6 +274,28 @@ RPKI Status: %s
                 }
             }
         }
+        output += "\n"
+    }
+    badports := make(map[string][]uint16)
+    badportspool := map[string][]uint16{
+        "tcp": []uint16{20,21,22,23,69,88,111,135,139,161,162,389,445,636,2049,3306,3389,5432,5900,5902,6379},
+    }
+    for key, value := range ports {
+        for _, port := range value {
+            if slices.Contains(badportspool[key], port) {
+                badports[key] = append(badports[key], port)
+            }
+        }
+    }
+    if len(badports) > 0 {
+        output += "There some weaknesses port is open:\n"
+        for key, value := range badports {
+            output += fmt.Sprintf("%s:\n", key)
+            for _, port := range value {
+                output += fmt.Sprintf("%d\n", port)
+            }
+        }
+        output += "We recommended not to open these port. Please check.\n"
         output += "\n"
     }
     fmt.Println(output)
